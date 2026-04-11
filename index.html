@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chomsky Hierarchy Logic Cores</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- IBM Plex Sans & IBM Plex Mono Font -->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- GSAP via CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- tsParticles bundle via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+</head>
+<body>
+    <!-- Particle Background -->
+    <div id="tsparticles"></div>
+
+    <div class="container">
+        <header>
+            <h1 class="gsap-title">Chomsky Hierarchy</h1>
+            <p class="gsap-subtitle">System Status: <span class="status-ok">ONLINE</span> <span class="mono-text">// Core Visualizer Module</span></p>
+            <div class="header-actions">
+            <button class="btn btn-outline mono-text" id="btn-open-classifier">[ Q ] CORE_CLASSIFIER</button>
+            <button class="btn btn-outline mono-text" id="btn-diagnostics">[ RUN DIAGNOSTICS ]</button>
+            <button class="btn btn-outline mono-text" id="btn-glossary">[ ? GLOSSARY ]</button>
+        </div>
+        </header>
+        
+        <main class="content">
+            <div class="visualization gsap-viz">
+                <div class="core-wrapper">
+                    <!-- Absolute Positioned Siblings for exact hit testing -->
+                    <div class="logic-core type-0" data-type="0">
+                        <div class="core-rings">
+                            <div class="ring-outer"></div>
+                            <div class="ring-inner"></div>
+                        </div>
+                        <span class="label">Type 0 // Recursively Enum</span>
+                    </div>
+                    
+                    <div class="logic-core type-1" data-type="1">
+                        <div class="core-rings">
+                            <div class="ring-outer"></div>
+                            <div class="ring-inner"></div>
+                        </div>
+                        <span class="label">TYPE 1 // CONTEXT-SENSITIVE</span>
+                    </div>
+                    
+                    <div class="logic-core type-2" data-type="2">
+                        <div class="core-rings">
+                            <div class="ring-outer"></div>
+                            <div class="ring-inner"></div>
+                        </div>
+                        <span class="label">TYPE 2 // CONTEXT-FREE</span>
+                    </div>
+                    
+                    <div class="logic-core type-3" data-type="3">
+                        <div class="core-rings">
+                            <div class="ring-outer"></div>
+                            <div class="ring-inner"></div>
+                        </div>
+                        <span class="label">Type 3 // Regular</span>
+                    </div>
+                </div>
+            </div>
+            
+            <aside class="data-terminal gsap-panel" id="infoPanel">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <div class="terminal-title">DATA_TERMINAL_v1.0</div>
+                </div>
+                <div class="terminal-body scrollable">
+                    <div class="prompt" id="defaultPrompt">
+                        <h2 class="mono-text">Awaiting Input...</h2>
+                        <p class="mono-text">> Select a logic core from the array to extract parameter definitions.</p>
+                        <div class="cursor-blink">_</div>
+                    </div>
+                    <div class="details hidden" id="classDetails">
+                        <div class="field-row title-row">
+                            <span class="field-label">[ TARGET_CLASS ]</span>
+                            <h2 id="className" class="mono-glow">Class Name</h2>
+                        </div>
+                        
+                        <div class="terminal-divider"></div>
+                        
+                        <div class="detail-group">
+                            <span class="field-label">[ GRAMMAR.RULESET ]</span>
+                            <div class="data-box">
+                                <span class="data-icon">></span
+                                ><p id="grammarRules" class="mono-text">Rules</p>
+                            </div>
+                        </div>
+                        <div class="detail-group">
+                            <span class="field-label">[ AUTOMATON.MODEL ]</span>
+                            <div class="data-box">
+                                <span class="data-icon">></span
+                                ><p id="automatonType" class="mono-text">Type</p>
+                            </div>
+                            <button id="btn-simulate" class="simulate-btn mono-text">> INITIATE SIMULATION [&#9654;]</button>
+                        </div>
+                        <div class="detail-group">
+                            <span class="field-label">[ VALID.EXAMPLES ]</span>
+                            <div class="data-box">
+                                <span class="data-icon">></span
+                                ><p id="exampleText" class="mono-text">Example</p>
+                            </div>
+                        </div>
+                        <div class="detail-group">
+                            <span class="field-label">[ SYSTEM.DETAILS ]</span>
+                            <div class="data-box">
+                                <span class="data-icon">></span
+                                ><p id="systemDetails" class="mono-text">Details</p>
+                            </div>
+                        </div>
+                        <div class="detail-group">
+                            <span class="field-label">[ REAL_WORLD.USAGE ]</span>
+                            <div class="data-box">
+                                <span class="data-icon">></span
+                                ><p id="realWorldText" class="mono-text">Usage</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- Global Overlay Modal -->
+    <div id="global-modal" class="modal-overlay hidden">
+        <div class="modal-content data-terminal">
+            <div class="terminal-header">
+                <div class="terminal-dots"><span></span><span></span><span></span></div>
+                <div id="modal-title" class="terminal-title">SYSTEM_OVERLAY</div>
+                <button id="btn-close-modal" class="close-btn mono-text">[ X ] CLOSE</button>
+            </div>
+            <div id="modal-body" class="terminal-body scrollable">
+                <!-- Content gets injected dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <template id="tpl-glossary">
+        <div class="glossary-content">
+            <h3 class="mono-glow style-c2" style="text-align: center; margin-bottom: 2rem;">CHOMSKY HIERARCHY MATRIX</h3>
+            
+            <div class="table-responsive-wrapper">
+                <div class="glossary-table mono-text">
+                    <div class="g-header">TYPE</div>
+                    <div class="g-header">GRAMMAR</div>
+                    <div class="g-header">MEMORY MODEL</div>
+                    <div class="g-header">EXAMPLE</div>
+
+                    <div class="g-cell style-c3 glow-c3" style="font-weight: bold; font-size: 1.2rem;">3</div>
+                    <div class="g-cell">Regular</div>
+                    <div class="g-cell">Finite State Automaton (FSA)</div>
+                    <div class="g-cell">a*b</div>
+
+                    <div class="g-cell style-c2 glow-c2" style="font-weight: bold; font-size: 1.2rem;">2</div>
+                    <div class="g-cell">Context-Free</div>
+                    <div class="g-cell">Pushdown Automaton (PDA)</div>
+                    <div class="g-cell">aⁿbⁿ</div>
+
+                    <div class="g-cell style-c1 glow-c1" style="font-weight: bold; font-size: 1.2rem;">1</div>
+                    <div class="g-cell">Context-Sensitive</div>
+                    <div class="g-cell">Linear Bounded Automaton (LBA)</div>
+                    <div class="g-cell" style="font-size: 0.85rem;">aⁿbⁿcⁿ</div>
+
+                    <div class="g-cell style-c0 glow-c0" style="font-weight: bold; font-size: 1.2rem;">0</div>
+                    <div class="g-cell">Recursively Enumerable</div>
+                    <div class="g-cell">Turing Machine (TM)</div>
+                    <div class="g-cell" style="font-size: 0.85rem;">Unrestricted</div>
+                </div>
+            </div>
+            
+            <div class="terminal-divider" style="margin-top: 2rem;"></div>
+            <p class="mono-text" style="color: #64748b; text-align: center;">> Every lower type holds absolute mathematical inclusion inside all higher types.</p>
+        </div>
+    </template>
+    
+    <template id="tpl-sim-3">
+        <div class="simulation-view">
+            <h3 class="mono-glow style-c3">FINITE STATE AUTOMATON (FSA)</h3>
+            <p class="mono-text" style="color: #94a3b8; margin-bottom: 2rem;">> Processing Regex `a*b`.</p>
+            
+            <div class="fsa-interactive-canvas" style="width: 100%; max-width: 500px; aspect-ratio: 500 / 380; position: relative; margin: 1.5rem auto;">
+                <svg class="fsa-svg" viewBox="0 0 500 380" style="overflow:visible; width:100%; height:100%;">
+                    <defs>
+                        <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto">
+                            <polygon points="0 0, 8 3, 0 6" fill="var(--c3)" />
+                        </marker>
+                    </defs>
+                    <!-- q0 loop a -->
+                    <path d="M 130 105 C 100 30, 200 30, 170 105" fill="none" class="fsa-path" marker-end="url(#arrowhead)"></path>
+                    <text x="150" y="55" class="fsa-svg-label" text-anchor="middle">a</text>
+                    
+                    <!-- q0 to q1 b -->
+                    <path d="M 175 130 L 315 130" fill="none" class="fsa-path" marker-end="url(#arrowhead)"></path>
+                    <text x="245" y="115" class="fsa-svg-label" text-anchor="middle">b</text>
+
+                    <!-- q0 to trap -->
+                    <path d="M 165 155 L 225 245" fill="none" class="fsa-path" marker-end="url(#arrowhead)"></path>
+                    <text x="175" y="210" class="fsa-svg-label" text-anchor="middle">other</text>
+
+                    <!-- q1 to trap -->
+                    <path d="M 335 155 L 275 245" fill="none" class="fsa-path" marker-end="url(#arrowhead)"></path>
+                    <text x="325" y="210" class="fsa-svg-label" text-anchor="middle">any</text>
+
+                    <!-- trap loop -->
+                    <path d="M 230 295 C 200 370, 300 370, 270 295" fill="none" class="fsa-path" marker-end="url(#arrowhead)"></path>
+                    <text x="250" y="355" class="fsa-svg-label" text-anchor="middle">any</text>
+                </svg>
+
+                <div class="fsa-node active-state" id="node-q0" style="left: 30%; top: 34.2%; transform: translate(-50%, -50%);">q0</div>
+                <div class="fsa-node node-accept" id="node-q1" style="left: 70%; top: 34.2%; transform: translate(-50%, -50%);">q1</div>
+                <div class="fsa-node" id="node-trap" style="left: 50%; top: 71%; transform: translate(-50%, -50%);">Trap</div>
+
+                <!-- Standalone Animation Dot -->
+                <div class="fsa-active-dot" id="fsa-dot"></div>
+            </div>
+
+            <div class="fsa-controls" style="margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; box-sizing: border-box;">
+                <input type="text" id="fsa-input" class="mono-text" placeholder="String (e.g. aab)..." autocomplete="off" />
+                <button id="fsa-btn-step" class="action-btn mono-text" style="color:#10b981; border-color: rgba(16, 185, 129, 0.4);">[ STEP ]</button>
+                <button id="fsa-btn-reset" class="action-btn mono-text" style="color:#ef4444; border-color: rgba(239, 68, 68, 0.4);">[ RESET ]</button>
+            </div>
+            
+            <div class="sim-log mono-text" style="text-align: left; max-width: 500px; margin: 1.5rem auto 0 auto;">
+                > Current State: <span id="fsa-status-state" class="style-c3">q0</span><br>
+                > Remaining Input: <span id="fsa-status-input" style="color:#e2e8f0;">[Awaiting]</span><br>
+                > Result: <span id="fsa-status-result" style="color:#64748b;">PENDING</span>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-sim-2">
+        <div class="simulation-view">
+            <h3 class="mono-glow style-c2">Pushdown Automaton (PDA)</h3>
+            <p class="mono-text" style="color: #94a3b8; margin-bottom: 2rem;">> Enforcing LIFO Stack Memory for aⁿbⁿ.</p>
+            
+            <div class="sim-pda interactive-matrix">
+                <div class="stack-view" id="pda-stack">
+                    <div class="stack-box style-c2" id="z0-base">Z0</div>
+                </div>
+            </div>
+
+            <div class="fsa-controls" style="margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; box-sizing: border-box;">
+                <input type="text" id="pda-input" class="mono-text" placeholder="String (e.g. aabb)..." autocomplete="off" />
+                <button id="pda-btn-step" class="action-btn mono-text" style="color:#10b981; border-color: rgba(16, 185, 129, 0.4);">[ STEP ]</button>
+                <button id="pda-btn-reset" class="action-btn mono-text" style="color:#ef4444; border-color: rgba(239, 68, 68, 0.4);">[ RESET ]</button>
+            </div>
+            
+            <div class="sim-log mono-text" style="text-align: left; max-width: 500px; margin: 1.5rem auto 0 auto;">
+                > Machine State: <span id="pda-status-state" class="style-c2">q0</span><br>
+                > Remaining Input: <span id="pda-status-input" style="color:#e2e8f0;">[Awaiting]</span><br>
+                > Action Matrix: <span id="pda-log" style="color:#f472b6;">IDLE</span><br>
+                > Result: <span id="pda-status-result" style="color:#64748b;">PENDING</span>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-sim-1">
+        <div class="simulation-view">
+            <h3 class="mono-glow style-c1">Linear Bounded Automaton (LBA)</h3>
+            <p class="mono-text" style="color: #94a3b8; margin-bottom: 2rem;">> Tape is mathematically strictly bound to input length `[x]`.</p>
+            
+            <div class="sim-tm-container interactive-matrix" style="height: 160px;">
+                <div class="tm-tape-wrapper">
+                    <div class="tm-tape bounded-tape" id="lba-tape">
+                        <!-- Javascript clears and rebuilds this tape array array completely -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="fsa-controls" style="margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; box-sizing: border-box;">
+                <input type="text" id="lba-input" class="mono-text" placeholder="String (e.g. aabbcc)..." autocomplete="off" />
+                <button id="lba-btn-step" class="action-btn mono-text" style="color:#10b981; border-color: rgba(16, 185, 129, 0.4);">[ STEP ]</button>
+                <button id="lba-btn-auto" class="action-btn mono-text" style="color:#c084fc; border-color: rgba(192, 132, 252, 0.4);">[ AUTO RUN ]</button>
+                <button id="lba-btn-reset" class="action-btn mono-text" style="color:#ef4444; border-color: rgba(239, 68, 68, 0.4);">[ RESET ]</button>
+            </div>
+            
+            <div class="sim-log mono-text" style="text-align: left; max-width: 500px; margin: 1.5rem auto 0 auto;">
+                > Machine State: <span id="lba-status-state" class="style-c1">q0_seek_A</span><br>
+                > Tape Action: <span id="lba-log" style="color:#c084fc;">IDLE</span><br>
+                > Result: <span id="lba-status-result" style="color:#64748b;">PENDING</span>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-sim-0">
+        <div class="simulation-view">
+            <h3 class="mono-glow style-c0">Turing Machine (TM)</h3>
+            <p class="mono-text" style="color: #94a3b8; margin-bottom: 2rem;">> Infinite tape. Infinite time. Unbounded memory.</p>
+            
+            <div class="sim-tm-container interactive-matrix" style="height: 160px;">
+                <div class="tm-tape-wrapper tm-tape-wrapper-0">
+                    <div class="tm-tape infinite-tape" id="tm-tape">
+                        <!-- Javascript clears and rebuilds -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="fsa-controls" style="margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; box-sizing: border-box;">
+                <input type="text" id="tm-input" class="mono-text" placeholder="Binary String (e.g. 1011)..." autocomplete="off" />
+                <button id="tm-btn-step" class="action-btn mono-text" style="color:#10b981; border-color: rgba(16, 185, 129, 0.4);">[ STEP ]</button>
+                <button id="tm-btn-auto" class="action-btn mono-text" style="color:#60a5fa; border-color: rgba(96, 165, 250, 0.4);">[ AUTO RUN ]</button>
+                <button id="tm-btn-reset" class="action-btn mono-text" style="color:#ef4444; border-color: rgba(239, 68, 68, 0.4);">[ RESET ]</button>
+            </div>
+            
+            <div class="sim-log mono-text" style="text-align: left; max-width: 500px; margin: 1.5rem auto 0 auto;">
+                > Machine State: <span id="tm-status-state" class="style-c0">q0_seek_end</span><br>
+                > Tape Action: <span id="tm-log" style="color:#60a5fa;">IDLE</span><br>
+                > Result: <span id="tm-status-result" style="color:#64748b;">PENDING</span>
+            </div>
+        </div>
+    </template>
+
+    <template id="tpl-sim-classifier">
+        <div class="modal-body-content" style="text-align: center; padding: 2rem;">
+            <p class="mono-text" style="color: #94a3b8; margin-bottom: 2rem; font-size: 0.95rem;">> Initialize global string parameter routing limit checker:</p>
+            <input type="text" id="master-input" class="mono-text" placeholder="Enter string or grammar (e.g., a^n b^n)...">
+            <br>
+            <button class="btn btn-outline mono-text" id="btn-classify" style="margin-top: 2rem; width: 100%; max-width: 400px; padding: 12px; font-weight: bold; letter-spacing: 0.1em; color: #10b981;">[ EXECUTE CLASSIFICATION ]</button>
+        </div>
+    </template>
+    
+    <script src="script.js"></script>
+</body>
+</html>
