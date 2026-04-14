@@ -414,6 +414,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    function parseGrammarAndGenerateString(input) {
+        const normalized = input.trim().replace(/\s+/g, '').toLowerCase();
+
+        if (normalized === 'a*b' || normalized === 'a+b' || normalized === '(a|b)*') {
+            return { generatedString: "aaab", targetType: 3, typeName: "FSA" };
+        }
+        if (normalized === 'a^nb^n' || normalized === 'ww^r') {
+            return { generatedString: "aabb", targetType: 2, typeName: "PDA" };
+        }
+        if (normalized === 'a^nb^nc^n' || normalized === 'a^nb^nc^nd^n' || normalized === 'ww') {
+            return { generatedString: "aabbcc", targetType: 1, typeName: "LBA" };
+        }
+        return null;
+    }
+
     function classifyAndRunString(inputString) {
         if(isDetailMode) {
             cores.forEach(c => {
@@ -428,18 +443,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         if(diagnosticTimeout) clearTimeout(diagnosticTimeout);
         
         let targetType = -1;
-        if (/^a*b$/.test(inputString)) targetType = 3;
-        else if (/^a+b+$/.test(inputString)) targetType = 2;
-        else if (/^a+b+c+$/.test(inputString)) targetType = 1;
-        else if (/^[01_]+$/.test(inputString)) targetType = 0;
+        let finalString = inputString;
+        const parsedData = parseGrammarAndGenerateString(inputString);
+        
+        if (parsedData) {
+            targetType = parsedData.targetType;
+            finalString = parsedData.generatedString;
+            defaultPrompt.innerHTML = `<p class="mono-text" style="color: #10b981;">> FORMAL GRAMMAR RECOGNIZED. GENERATING TEST STRING: '${finalString}'. ROUTING TO TYPE ${targetType}...</p><div class="cursor-blink">_</div>`;
+        } else {
+            if (/^a*b$/.test(inputString)) targetType = 3;
+            else if (/^a+b+$/.test(inputString)) targetType = 2;
+            else if (/^a+b+c+$/.test(inputString)) targetType = 1;
+            else if (/^[01_]+$/.test(inputString)) targetType = 0;
 
-        if (targetType === -1) {
-            defaultPrompt.innerHTML = `<p class="mono-text" style="color: #ef4444;">> ERROR: STRING PATTERN UNRECOGNIZED BY CURRENT LOGIC CORES.</p><div class="cursor-blink">_</div>`;
-            return;
+            if (targetType === -1) {
+                defaultPrompt.innerHTML = `<p class="mono-text" style="color: #ef4444;">> ERROR: STRING PATTERN UNRECOGNIZED BY CURRENT LOGIC CORES.</p><div class="cursor-blink">_</div>`;
+                return;
+            }
+
+            const typeRef = {3: "FSA", 2: "CONTEXT-FREE", 1: "LINEAR BOUNDED", 0: "TURING MACHINE"};
+            defaultPrompt.innerHTML = `<p class="mono-text" style="color: #10b981;">> STRING RECOGNIZED. ROUTING TO TYPE ${targetType} ${typeRef[targetType]} CORE...</p><div class="cursor-blink">_</div>`;
         }
-
-        const typeRef = {3: "FSA", 2: "CONTEXT-FREE", 1: "LINEAR BOUNDED", 0: "TURING MACHINE"};
-        defaultPrompt.innerHTML = `<p class="mono-text" style="color: #10b981;">> STRING RECOGNIZED. ROUTING TO TYPE ${targetType} ${typeRef[targetType]} CORE...</p><div class="cursor-blink">_</div>`;
 
         openModal(document.getElementById('tpl-sim-' + targetType).innerHTML, 'SYSTEM_SIMULATION_ENV');
 
@@ -448,7 +472,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const innerInput = document.getElementById('fsa-input');
                 const btnStep = document.getElementById('fsa-btn-step');
                 if(innerInput && btnStep) {
-                    innerInput.value = inputString;
+                    innerInput.value = finalString;
                     if(fsaAutoRunInterval) clearInterval(fsaAutoRunInterval);
                     fsaAutoRunInterval = setInterval(() => {
                         btnStep.click();
@@ -463,7 +487,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const innerInput = document.getElementById('pda-input');
                 const btnStep = document.getElementById('pda-btn-step');
                 if(innerInput && btnStep) {
-                    innerInput.value = inputString;
+                    innerInput.value = finalString;
                     if(fsaAutoRunInterval) clearInterval(fsaAutoRunInterval);
                     fsaAutoRunInterval = setInterval(() => {
                         btnStep.click();
@@ -478,14 +502,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const innerInput = document.getElementById('lba-input');
                 const btnAuto = document.getElementById('lba-btn-auto');
                 if(innerInput && btnAuto) {
-                    innerInput.value = inputString;
+                    innerInput.value = finalString;
                     btnAuto.click();
                 }
             } else if (targetType === 0) {
                 const innerInput = document.getElementById('tm-input');
                 const btnAuto = document.getElementById('tm-btn-auto');
                 if(innerInput && btnAuto) {
-                    innerInput.value = inputString;
+                    innerInput.value = finalString;
                     btnAuto.click();
                 }
             }
